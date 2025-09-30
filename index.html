@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Doğum Günü - Ahmet</title>
+  <style>
+    :root{--bg:#0f172a;--accent:#ffdd57}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
+    body{background:linear-gradient(180deg,var(--bg),#071029);display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden}
+    .wrap{width:min(920px,94vw);text-align:center;padding:28px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));box-shadow:0 8px 30px rgba(2,6,23,0.6);position:relative;z-index:2}
+    h1{margin:0 0 18px;font-size:28px;letter-spacing:0.2px}
+    p.lead{margin:0 0 20px;opacity:0.9}
+
+    /* Carousel */
+    .carousel{position:relative;height:420px;margin:0 auto;max-width:720px;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+    .slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.98);transition:opacity 700ms ease, transform 700ms ease}
+    .slide.active{opacity:1;transform:scale(1)}
+    .slide img{width:100%;height:100%;object-fit:cover;border-radius:14px;filter:drop-shadow(0 8px 20px rgba(2,6,23,0.6))}
+
+    /* Dots */
+    .dots{display:flex;gap:8px;position:relative;justify-content:center;margin-top:16px}
+    .dot{width:12px;height:12px;border-radius:999px;background:rgba(255,255,255,0.12);cursor:pointer;transition:transform 200ms,background 200ms}
+    .dot.active{background:var(--accent);transform:scale(1.25)}
+
+    /* Small note */
+    .note{margin-top:14px;font-size:13px;opacity:0.7}
+
+    /* Confetti */
+    .emoji{position:absolute;font-size:28px;pointer-events:none;animation:fall linear forwards}
+    @keyframes fall{
+      0%{transform:translateY(-10vh) rotate(0deg);opacity:1}
+      100%{transform:translateY(110vh) rotate(360deg);opacity:0}
+    }
+
+    @media (max-width:520px){
+      .carousel{height:300px}
+      h1{font-size:20px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Doğum günün kutlu olsun Ahmetim — Seni seviyoruz 🎉</h1>
+    <p class="lead">Benimle Evlenir misin.</p>
+
+    <div class="carousel" id="carousel">
+      <!-- Slide 1 -->
+      <div class="slide active">
+        <img src="resim1.jpg" alt="Resim 1">
+      </div>
+      <!-- Slide 2 -->
+      <div class="slide">
+        <img src="resim2.jpg" alt="Resim 2">
+      </div>
+      <!-- Slide 3 -->
+      <div class="slide">
+        <img src="resim3.jpg" alt="Resim 3">
+      </div>
+    </div>
+
+    <div class="dots" id="dots" aria-hidden="false">
+      <div class="dot active" data-index="0"></div>
+      <div class="dot" data-index="1"></div>
+      <div class="dot" data-index="2"></div>
+    </div>
+
+    <div class="note">Kendi resimlerini aynı klasöre koy: <code>resim1.jpg, resim2.jpg, resim3.jpg</code>.</div>
+  </div>
+
+  <script>
+    (function(){
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const dots = Array.from(document.querySelectorAll('.dot'));
+      let idx = 0;
+      let interval = null;
+
+      function goTo(n){
+        slides[idx].classList.remove('active');
+        dots[idx].classList.remove('active');
+        idx = (n + slides.length) % slides.length;
+        slides[idx].classList.add('active');
+        dots[idx].classList.add('active');
+      }
+
+      function next(){ goTo(idx+1); }
+
+      function start(){ if(!interval) interval = setInterval(next, 2500); }
+      function stop(){ if(interval){ clearInterval(interval); interval = null; } }
+
+      // start rotating automatically
+      start();
+
+      // dot click
+      dots.forEach(d=> d.addEventListener('click', ()=>{ goTo(Number(d.dataset.index)); }))
+
+      // accessibility: keyboard left/right
+      document.addEventListener('keydown', (e)=>{
+        if(e.key === 'ArrowRight') goTo(idx+1);
+        if(e.key === 'ArrowLeft') goTo(idx-1);
+      });
+
+      // Confetti emojis 🎉🎂
+      function createEmoji(){
+        const emojiList = ['🎉','🎂','🎊','🎁'];
+        const emoji = document.createElement('div');
+        emoji.className = 'emoji';
+        emoji.textContent = emojiList[Math.floor(Math.random()*emojiList.length)];
+        emoji.style.left = Math.random()*100 + 'vw';
+        emoji.style.animationDuration = (3 + Math.random()*3) + 's';
+        document.body.appendChild(emoji);
+        setTimeout(()=> emoji.remove(), 6000);
+      }
+      setInterval(createEmoji, 500);
+    })();
+  </script>
+</body>
+</html>
